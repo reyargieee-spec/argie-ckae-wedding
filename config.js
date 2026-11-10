@@ -70,8 +70,8 @@ window.WEDDING = {
   /* Supabase connection (free). Leave empty to run in DEMO MODE,
      where everything is saved only in this browser.
      See SETUP.md for the 5-minute setup. */
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://aurdivdqtlfzhurpergd.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1cmRpdmRxdGxmemh1cnBlcmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNjEzNTgsImV4cCI6MjEwOTgzNzM1OH0.sCQT-UMkXkueE9kzhzodpEyrYJW685PfAeYx3J-eLqw",
 
   // "How well do you know us?" quiz — answer is the index of the right choice
   quiz: [
