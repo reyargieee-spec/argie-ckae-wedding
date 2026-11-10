@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Table Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap">
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* Layout: one 5×7 in table card centred on screen; prints edge-to-edge on its own page. */
+:root{--paper:#FBF7EF;--cream:#F3EBDD;--matcha:#6F7F4A;--matcha-deep:#3E4A2C;--khaki:#C3B091;--gold:#B0904F;--ink:#2C3324;--ink-soft:#5E6553;
+  --display:"Bodoni Moda",Georgia,serif;--script:"Pinyon Script",cursive;--body:"Jost","Avenir Next",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#E6DFD0;font-family:var(--body);color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:20px;padding:30px 16px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:.85rem;color:var(--ink-soft)}
+.bar button{padding:11px 20px;border-radius:999px;border:1px solid var(--matcha-deep);background:var(--matcha-deep);color:var(--cream);font:inherit;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+.bar code{background:var(--paper);padding:6px 10px;border-radius:6px;word-break:break-all}
+.card{width:5in;max-width:100%;aspect-ratio:5/7;background:var(--paper);position:relative;padding:.42in .38in;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 30px 60px -30px rgba(62,74,44,.6)}
+.card::before{content:"";position:absolute;inset:14px;border:1px solid rgba(176,144,79,.55);border-radius:2.2in 2.2in 4px 4px;pointer-events:none}
+.card::after{content:"";position:absolute;inset:20px;border:1px solid rgba(176,144,79,.25);border-radius:2.1in 2.1in 2px 2px;pointer-events:none}
+.eyebrow{font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--matcha);margin-top:.5in}
+.names{font-family:var(--script);font-size:2.3rem;line-height:1.05;color:var(--matcha-deep);margin:6px 0 2px}
+.lead{font-family:var(--display);font-style:italic;font-size:1rem;color:var(--ink-soft);max-width:26ch;margin:6px auto 0}
+.qr{margin:18px auto 12px;padding:12px;background:#fff;border-radius:10px;border:1px solid rgba(176,144,79,.35)}
+.qr img,.qr canvas{display:block;width:1.7in!important;height:1.7in!important}
+.does{display:grid;grid-template-columns:repeat(2,auto);gap:4px 18px;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--matcha-deep);margin-top:4px}
+.does span::before{content:"✦ ";color:var(--gold)}
+.tag{margin-top:auto;font-family:var(--display);font-size:.9rem;color:var(--gold)}
+@media screen and (max-width:520px){.card{aspect-ratio:auto;padding-bottom:.5in}.tag{margin-top:14px}}
+@media print{
+  @page{size:5in 7in;margin:0}
+  body{background:none;padding:0}
+  .bar{display:none}
+  .card{box-shadow:none;width:5in;height:7in}
+}
+</style>
+</head>
+<body>
+<div class="bar"><button onclick="window.print()">Print card</button><span>QR opens:</span><code id="url"></code></div>
+<div class="card">
+  <div class="eyebrow">Share the love</div>
+  <div class="names" id="names"></div>
+  <p class="lead">Scan to share your photos, leave us a wish and play along tonight</p>
+  <div class="qr" id="qr"></div>
+  <div class="does"><span>Photo wall</span><span>Wishing wall</span><span>Games</span><span>Time capsule</span></div>
+  <div class="tag" id="tag"></div>
+</div>
+<script>
+  const W = window.WEDDING;
+  const url = W.guestUrl || new URL("guest.html", location.href).href;
+  document.getElementById("url").textContent = url;
+  document.getElementById("names").textContent = W.groom + " & " + W.bride;
+  document.getElementById("tag").textContent = W.hashtag;
+  new QRCode(document.getElementById("qr"), { text: url, width: 480, height: 480, colorDark: "#3E4A2C", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+</script>
+</body>
+</html>

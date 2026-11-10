@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Our Wedding Moments</title>
+<meta name="description" content="Share your photos, wishes and play along at Argie and Chatherine Kae's wedding.">
+<meta name="theme-color" content="#3E4A2C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="store.js"></script>
+<style>
+/* Layout: a phone-first keepsake app — a botanical header with the live love counter, four rooms behind a bottom tab bar. */
+:root{
+  --paper:#FBF7EF; --cream:#F3EBDD; --linen:#EADFCB;
+  --matcha:#6F7F4A; --matcha-deep:#3E4A2C; --sage:#A9B58E;
+  --khaki:#C3B091; --gold:#B0904F; --ink:#2C3324; --ink-soft:#5E6553; --rose:#B9786A;
+  --display:"Bodoni Moda", "Didot", Georgia, serif;
+  --script:"Pinyon Script", "Snell Roundhand", cursive;
+  --body:"Jost", "Avenir Next", "Helvetica Neue", sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-weight:300;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+button,input,textarea,select{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+.eyebrow{font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;font-weight:500;color:var(--matcha)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+header{position:relative;background:radial-gradient(130% 90% at 50% 0%,#56643C 0%,var(--matcha-deep) 65%,#2B3420 100%);color:var(--cream);text-align:center;padding-block:calc(44px + env(safe-area-inset-top,0px)) 40px;overflow:hidden}
+header .eyebrow{color:var(--khaki)}
+header h1{font-family:var(--script);font-size:clamp(2.6rem,10vw,4.2rem);line-height:1.1;margin-top:6px;color:var(--cream)}
+header .hi{font-family:var(--display);font-style:italic;color:#DCD3BD;margin-top:4px}
+header .hi button{background:none;border:0;border-bottom:1px dotted var(--khaki);color:var(--khaki);cursor:pointer;padding:0;font-style:italic}
+.arch{position:absolute;left:50%;top:18px;width:min(92vw,520px);height:420px;transform:translateX(-50%);border:1px solid rgba(195,176,145,.25);border-radius:260px 260px 0 0;pointer-events:none}
+.arch::after{content:"";position:absolute;inset:10px;border:1px solid rgba(195,176,145,.14);border-radius:250px 250px 0 0}
+.love{position:relative;margin:26px auto 0;display:inline-flex;align-items:center;gap:14px;padding:10px 12px 10px 22px;border-radius:999px;background:rgba(251,247,239,.1);border:1px solid rgba(195,176,145,.35)}
+.love .count{font-family:var(--display);font-size:1.5rem;font-variant-numeric:tabular-nums;color:var(--cream);line-height:1}
+.love small{display:block;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--khaki)}
+.love button{width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;background:var(--cream);color:var(--rose);display:grid;place-items:center;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);transition:transform .15s}
+.love button:active{transform:scale(.88)}
+.love svg{width:24px;height:24px}
+.heart-fly{position:fixed;pointer-events:none;z-index:200;color:var(--rose);animation:fly 1.6s ease-out forwards}
+@keyframes fly{0%{opacity:1;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(var(--dx),-180px) scale(1.4) rotate(var(--rot))}}
+.demo{background:var(--linen);color:var(--ink-soft);font-size:.82rem;text-align:center;padding:8px 16px}
+.demo b{color:var(--matcha-deep);font-weight:500}
+
+/* tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(251,247,239,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(111,127,74,.18);
+  display:flex;justify-content:center;padding:8px max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabs a{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--ink-soft);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;padding:6px 0;border-radius:12px;transition:.3s}
+.tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.3}
+.tabs a.on{color:var(--matcha-deep);background:rgba(169,181,142,.22)}
+.room{display:none;padding-block:36px 40px;animation:roomIn .6s cubic-bezier(.2,.7,.2,1)}
+.room.on{display:block}
+@keyframes roomIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.room-head{text-align:center;margin-bottom:26px}
+.room-head h2{font-size:clamp(1.9rem,6vw,2.6rem);color:var(--matcha-deep);margin-top:6px}
+.room-head p{color:var(--ink-soft);max-width:44ch;margin:8px auto 0}
+
+/* shared controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 22px;border-radius:999px;border:1px solid var(--matcha);background:transparent;color:var(--matcha-deep);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:.3s;text-decoration:none}
+.btn:hover{background:var(--matcha);color:var(--paper)}
+.btn.solid{background:var(--matcha-deep);border-color:var(--matcha-deep);color:var(--cream)}
+.btn.solid:hover{background:var(--matcha)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+.card{background:#fff;background:color-mix(in srgb,var(--paper) 60%,white);border:1px solid rgba(176,144,79,.3);border-radius:14px;padding:22px}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);font-weight:500;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;border:1px solid rgba(111,127,74,.3);border-radius:10px;background:var(--paper);font-size:1rem}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--matcha)}
+.msg{font-size:.88rem;min-height:1.3em;margin-top:8px;color:var(--ink-soft)}
+.msg.err{color:#9A4B3A}
+.empty{text-align:center;color:var(--ink-soft);padding:40px 16px;border:1px dashed rgba(111,127,74,.35);border-radius:14px}
+.empty .script{font-family:var(--script);font-size:2.2rem;color:var(--gold);display:block;line-height:1}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--matcha-deep);color:var(--cream);padding:12px 20px;border-radius:999px;font-size:.88rem;opacity:0;transition:.4s;z-index:150;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* photos */
+.upload{display:grid;gap:14px;margin-bottom:26px}
+.upload-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.up{display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 10px;border-radius:14px;border:1px solid rgba(111,127,74,.35);background:var(--cream);cursor:pointer;text-align:center;transition:.3s}
+.up:hover{border-color:var(--matcha);transform:translateY(-2px)}
+.up svg{width:30px;height:30px;stroke:var(--matcha-deep);fill:none;stroke-width:1.2}
+.up b{font-family:var(--display);font-weight:400;font-size:1.1rem;color:var(--matcha-deep)}
+.up small{font-size:.75rem;color:var(--ink-soft)}
+.up input{display:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+.progress{height:3px;background:rgba(111,127,74,.15);border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--matcha);transition:width .3s}
+.stats{display:flex;justify-content:center;gap:28px;margin-bottom:18px;color:var(--ink-soft);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
+.stats b{font-family:var(--display);font-size:1.4rem;color:var(--matcha-deep);font-weight:400;letter-spacing:0;margin-right:6px}
+.gallery{columns:3 220px;column-gap:12px}
+.ph{break-inside:avoid;margin-bottom:12px;border-radius:12px;overflow:hidden;position:relative;cursor:zoom-in;background:var(--linen);animation:pop .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.ph img{width:100%;height:auto;transition:transform .8s}
+.ph:hover img{transform:scale(1.04)}
+.ph figcaption{position:absolute;inset:auto 0 0 0;padding:28px 12px 10px;background:linear-gradient(transparent,rgba(30,36,22,.75));color:#F3EBDD;font-size:.8rem;line-height:1.35}
+.ph figcaption b{display:block;font-weight:500}
+.ph .tag{position:absolute;top:8px;left:8px;background:rgba(251,247,239,.9);color:var(--matcha-deep);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.lightbox{position:fixed;inset:0;z-index:300;background:rgba(24,29,18,.94);display:none;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.lightbox.on{display:flex;animation:roomIn .4s}
+.lightbox img{max-height:78vh;max-width:100%;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.lightbox .cap{position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--cream);font-size:.9rem;padding:0 60px}
+.lightbox button{position:absolute;background:rgba(251,247,239,.12);border:1px solid rgba(251,247,239,.25);color:var(--cream);width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:1.3rem}
+.lb-close{top:calc(16px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px))}
+.lb-prev{left:max(12px,env(safe-area-inset-left,0px));top:50%}
+.lb-next{right:max(12px,env(safe-area-inset-right,0px));top:50%}
+
+/* wishes */
+.wish-layout{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:26px;align-items:start}
+@media (max-width:820px){.wish-layout{grid-template-columns:1fr}}
+.colors{display:flex;gap:10px}
+.colors label{cursor:pointer}
+.colors input{position:absolute;opacity:0;pointer-events:none}
+.colors i{display:block;width:34px;height:34px;border-radius:50%;border:2px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:.2s}
+.colors input:checked + i{border-color:var(--matcha-deep);transform:scale(1.12)}
+.colors input:focus-visible + i{outline:2px solid var(--gold);outline-offset:2px}
+.wall{columns:2 260px;column-gap:16px}
+.wish{break-inside:avoid;margin-bottom:16px;padding:22px 22px 16px;border-radius:4px 18px 4px 18px;position:relative;animation:pop .7s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 14px 30px -22px rgba(62,74,44,.6)}
+.wish::before{content:"\201C";position:absolute;top:-4px;left:14px;font-family:var(--display);font-size:3.4rem;line-height:1;opacity:.25}
+.wish p{margin:14px 0 14px;font-family:var(--display);font-size:1.05rem;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
+.wish footer{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.78rem}
+.wish footer b{font-weight:500;display:block}
+.wish footer span{opacity:.7;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.wish .hb{display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(255,255,255,.35);padding:6px 11px;border-radius:999px;cursor:pointer;font-size:.8rem;transition:.2s}
+.wish .hb:active{transform:scale(.9)}
+.wish .hb svg{width:15px;height:15px;fill:var(--rose)}
+.wish .hb.mine{background:rgba(255,255,255,.7)}
+.c-matcha{background:#8A9A5B;color:#F7F2E6}.c-sage{background:#CDD5B8;color:#2C3324}.c-khaki{background:#D8C7A6;color:#2C3324}.c-cream{background:#F3EBDD;color:#2C3324;border:1px solid rgba(176,144,79,.3)}.c-blush{background:#E8CFC5;color:#3A2A24}
+
+/* games */
+.game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.game h3{font-size:1.5rem;color:var(--matcha-deep);margin:4px 0 6px}
+.game > p{color:var(--ink-soft);margin:0 0 16px;font-size:.95rem}
+.game.wide{grid-column:1/-1}
+.q-text{font-family:var(--display);font-size:1.3rem;margin:4px 0 16px;color:var(--ink);min-height:2.6em}
+.q-choices{display:grid;gap:10px}
+.q-choices button{text-align:left;padding:13px 16px;border-radius:12px;border:1px solid rgba(111,127,74,.3);background:var(--paper);cursor:pointer;transition:.25s}
+.q-choices button:hover{border-color:var(--matcha)}
+.q-choices button.right{background:#DDE5C8;border-color:var(--matcha)}
+.q-choices button.wrong{background:#F1DCD5;border-color:var(--rose)}
+.q-meta{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+.q-bar{height:3px;background:rgba(111,127,74,.15);border-radius:3px;margin-bottom:14px;overflow:hidden}
+.q-bar i{display:block;height:100%;background:var(--matcha);transition:width .5s}
+.score-big{font-family:var(--display);font-size:3.4rem;color:var(--matcha-deep);line-height:1;text-align:center}
+.board{list-style:none;margin:16px 0 0;padding:0;counter-reset:b}
+.board li{display:flex;justify-content:space-between;padding:9px 2px;border-bottom:1px solid rgba(111,127,74,.15);font-size:.95rem;counter-increment:b}
+.board li::before{content:counter(b);width:26px;font-family:var(--display);color:var(--gold)}
+.board li span{flex:1}
+.board li b{font-weight:500;font-variant-numeric:tabular-nums}
+.poll{padding:14px 0;border-bottom:1px solid rgba(111,127,74,.15)}
+.poll:last-child{border-bottom:0}
+.poll .pq{font-family:var(--display);font-size:1.08rem;margin-bottom:10px}
+.pbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pbtn{position:relative;overflow:hidden;padding:12px;border-radius:12px;border:1px solid rgba(111,127,74,.3);background:var(--paper);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pbtn i{position:absolute;inset:0 auto 0 0;width:0;background:rgba(169,181,142,.35);transition:width .8s cubic-bezier(.2,.7,.2,1);z-index:0}
+.pbtn span,.pbtn b{position:relative;z-index:1}
+.pbtn b{font-weight:500;font-variant-numeric:tabular-nums;font-size:.85rem}
+.pbtn.picked{border-color:var(--matcha-deep)}
+.voted .pbtn{cursor:default}
+.hunt{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:10px}
+.hunt li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid rgba(111,127,74,.25);background:var(--paper);cursor:pointer;transition:.25s;font-size:.95rem}
+.hunt li:hover{border-color:var(--matcha)}
+.hunt li i{flex:none;width:24px;height:24px;border-radius:50%;border:1px solid var(--matcha);display:grid;place-items:center;font-style:normal;font-size:.8rem;color:var(--paper)}
+.hunt li.got{background:#E7ECD8}
+.hunt li.got i{background:var(--matcha)}
+.ring{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.ring svg{width:64px;height:64px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:4}
+.ring .bg{stroke:rgba(111,127,74,.15)}
+.ring .fg{stroke:var(--matcha);stroke-linecap:round;transition:stroke-dashoffset 1s}
+.ring b{font-family:var(--display);font-size:1.6rem;color:var(--matcha-deep);font-weight:400}
+.songs{list-style:none;margin:14px 0 0;padding:0;max-height:260px;overflow:auto}
+.songs li{padding:10px 0;border-bottom:1px solid rgba(111,127,74,.15);font-size:.92rem}
+.songs li b{font-weight:500}
+.songs li small{display:block;color:var(--ink-soft);font-size:.78rem}
+
+/* capsule */
+.capsule{max-width:620px;margin:0 auto;text-align:center}
+.envelope-art{width:150px;height:100px;margin:6px auto 22px;position:relative}
+.envelope-art .b{position:absolute;inset:0;background:var(--linen);border-radius:6px;box-shadow:0 14px 24px -14px rgba(62,74,44,.6)}
+.envelope-art .f{position:absolute;left:0;right:0;top:0;height:60%;background:#DCCAA8;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .8s}
+.envelope-art .s{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8E9C64,#46542B);transform:scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1) .6s}
+.capsule.sealed .envelope-art .s{transform:scale(1)}
+.capsule.open .envelope-art .f{transform:rotateX(180deg)}
+.capsule .card{text-align:left}
+.unlock{font-family:var(--display);font-style:italic;color:var(--gold);font-size:1.1rem}
+
+/* name modal */
+.modal{position:fixed;inset:0;z-index:250;background:rgba(30,36,22,.6);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex;animation:roomIn .4s}
+.modal .card{max-width:400px;width:100%;text-align:center;background:var(--paper);padding:30px 26px}
+.modal .script{font-family:var(--script);font-size:2.6rem;color:var(--gold);line-height:1}
+.modal h3{font-size:1.5rem;color:var(--matcha-deep);margin:6px 0 16px}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="arch" aria-hidden="true"></div>
+  <div class="wrap" style="position:relative">
+    <div class="eyebrow">Welcome to the wedding of</div>
+    <h1 id="couple">Argie &amp; Chatherine Kae</h1>
+    <div class="hi" id="hi"></div>
+    <div class="love">
+      <div><span class="count" id="love-count">0</span><small>hearts sent</small></div>
+      <button id="love-btn" aria-label="Send love to the couple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.6h2c.7-1.4 2.2-2.6 4.3-2.6 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="demo" id="demo" hidden><b>Demo mode:</b> posts are saved on this device only until the online database is connected.</div>
+
+<main class="wrap">
+  <!-- PHOTOS -->
+  <section class="room" id="photos">
+    <div class="room-head">
+      <div class="eyebrow">The photo wall</div>
+      <h2>Through your eyes</h2>
+      <p>Every photo you share lands here for everyone at the wedding to see. Snap away.</p>
+    </div>
+    <div class="upload card">
+      <div class="upload-btns">
+        <label class="up"><input type="file" accept="image/*" capture="environment" id="cam"><svg viewBox="0 0 32 32"><path d="M4 10h5l2-3h10l2 3h5v15H4z"/><circle cx="16" cy="17" r="5"/></svg><b>Take a photo</b><small>Use your camera</small></label>
+        <label class="up"><input type="file" accept="image/*" multiple id="pick"><svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="2"/><path d="M4 22l7-7 6 6 4-4 7 7"/><circle cx="22" cy="12" r="2"/></svg><b>Upload photos</b><small>From your gallery</small></label>
+      </div>
+      <div class="row2">
+        <label class="field" style="margin:0"><span>Caption (optional)</span><input id="ph-cap" maxlength="140" placeholder="Say something about this moment"></label>
+        <label class="field" style="margin:0"><span>Scavenger hunt (optional)</span><select id="ph-prompt"><option value="">Not part of the hunt</option></select></label>
+      </div>
+      <div class="progress" id="ph-prog" hidden><i></i></div>
+      <div class="msg" id="ph-msg"></div>
+    </div>
+    <div class="stats"><span><b id="st-photos">0</b>photos</span><span><b id="st-people">0</b>photographers</span></div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <!-- WISHES -->
+  <section class="room" id="wishes">
+    <div class="room-head">
+      <div class="eyebrow">The wishing wall</div>
+      <h2>Words for the couple</h2>
+      <p>Leave a blessing, a memory or advice for married life. We'll read every single one.</p>
+    </div>
+    <div class="wish-layout">
+      <form class="card" id="wish-form">
+        <label class="field"><span>Your name</span><input id="w-name" maxlength="60" required></label>
+        <label class="field"><span>You are the couple's…</span>
+          <select id="w-rel"><option>Friend</option><option>Family</option><option>Godparent</option><option>Colleague</option><option>Entourage</option><option>Plus one</option></select></label>
+        <label class="field"><span>Your wish</span><textarea id="w-msg" maxlength="600" placeholder="Dear Argie & Kae…" required></textarea></label>
+        <div class="field"><span>Card color</span>
+          <div class="colors" role="radiogroup" aria-label="Card color">
+            <label><input type="radio" name="wc" value="sage" checked><i class="c-sage"></i></label>
+            <label><input type="radio" name="wc" value="matcha"><i class="c-matcha"></i></label>
+            <label><input type="radio" name="wc" value="khaki"><i class="c-khaki"></i></label>
+            <label><input type="radio" name="wc" value="cream"><i class="c-cream"></i></label>
+            <label><input type="radio" name="wc" value="blush"><i class="c-blush"></i></label>
+          </div>
+        </div>
+        <button class="btn solid" style="width:100%" id="w-send">Pin my wish to the wall</button>
+        <div class="msg" id="w-msgbox"></div>
+      </form>
+      <div class="wall" id="wall"></div>
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section class="room" id="games">
+    <div class="room-head">
+      <div class="eyebrow">Play with us</div>
+      <h2>Games &amp; little joys</h2>
+      <p>Test how well you know us, vote on the big questions, and complete the photo hunt.</p>
+    </div>
+    <div class="game-grid">
+      <div class="card game" id="quiz">
+        <div class="eyebrow">Quiz</div>
+        <h3>How well do you know us?</h3>
+        <div id="quiz-body"></div>
+      </div>
+      <div class="card game">
+        <div class="eyebrow">Leaderboard</div>
+        <h3>Top fans of the night</h3>
+        <ol class="board" id="board"></ol>
+      </div>
+      <div class="card game wide">
+        <div class="eyebrow">Live poll</div>
+        <h3>Who's more likely to…</h3>
+        <p>Pick one. Results update as the room votes.</p>
+        <div id="polls"></div>
+      </div>
+      <div class="card game wide">
+        <div class="eyebrow">Photo scavenger hunt</div>
+        <h3>Capture the night</h3>
+        <div class="ring"><svg viewBox="0 0 64 64"><circle class="bg" cx="32" cy="32" r="28"/><circle class="fg" id="ring-fg" cx="32" cy="32" r="28" stroke-dasharray="176" stroke-dashoffset="176"/></svg><div><b id="hunt-n">0</b> <span style="color:var(--ink-soft)">of <span id="hunt-t">0</span> found</span><br><small style="color:var(--ink-soft)">Tap a prompt to snap it.</small></div></div>
+        <ul class="hunt" id="hunt"></ul>
+      </div>
+      <div class="card game wide">
+        <div class="eyebrow">For the DJ</div>
+        <h3>Request a song</h3>
+        <form id="song-form" class="row2">
+          <label class="field" style="margin:0"><span>Song title</span><input id="s-title" maxlength="80" required></label>
+          <label class="field" style="margin:0"><span>Artist</span><input id="s-artist" maxlength="80"></label>
+        </form>
+        <div style="margin-top:12px"><button class="btn solid" form="song-form">Send request</button></div>
+        <div class="msg" id="s-msg"></div>
+        <ul class="songs" id="songs"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPSULE -->
+  <section class="room" id="capsule">
+    <div class="room-head">
+      <div class="eyebrow">Time capsule</div>
+      <h2>A letter for year one</h2>
+      <p>Write a private letter that stays sealed until our first anniversary. Only the two of us will open it.</p>
+    </div>
+    <div class="capsule" id="cap-wrap">
+      <div class="envelope-art" aria-hidden="true"><div class="b"></div><div class="f"></div><div class="s"></div></div>
+      <div class="unlock" id="unlock"></div>
+      <form class="card" id="cap-form" style="margin-top:20px">
+        <label class="field"><span>From</span><input id="c-name" maxlength="60" required></label>
+        <label class="field"><span>Your letter</span><textarea id="c-msg" maxlength="2000" style="min-height:170px" placeholder="By the time you read this, you've been married a whole year…" required></textarea></label>
+        <button class="btn solid" style="width:100%" id="c-send">Seal my letter</button>
+        <div class="msg" id="c-msgbox"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Rooms">
+  <a href="#photos" data-r="photos"><svg viewBox="0 0 24 24"><path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/></svg>Photos</a>
+  <a href="#wishes" data-r="wishes"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.3-8.8-8.6C1.8 8.2 3.8 5 7 5c2 0 3.4 1.1 4.1 2.4h1.8C13.6 6.1 15 5 17 5c3.2 0 5.2 3.2 3.8 6.4C19 15.7 12 20 12 20z"/></svg>Wishes</a>
+  <a href="#games" data-r="games"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.3 6L12 16.4 6.6 19.4l1.3-6L3.4 9.3l6-.7z"/></svg>Games</a>
+  <a href="#capsule" data-r="capsule"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="1.5"/><path d="M3 7l9 7 9-7"/></svg>Capsule</a>
+</nav>
+
+<div class="lightbox" id="lb" role="dialog" aria-label="Photo viewer">
+  <img id="lb-img" alt="">
+  <div class="cap" id="lb-cap"></div>
+  <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
+  <button class="lb-prev" id="lb-prev" aria-label="Previous photo">&lsaquo;</button>
+  <button class="lb-next" id="lb-next" aria-label="Next photo">&rsaquo;</button>
+</div>
+
+<div class="modal" id="name-modal" role="dialog" aria-label="Your name">
+  <form class="card" id="name-form">
+    <div class="script">Welcome</div>
+    <h3>What should we call you?</h3>
+    <label class="field"><span>Your name</span><input id="n-input" maxlength="60" autocomplete="name" required></label>
+    <button class="btn solid" style="width:100%">Join the celebration</button>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const W = window.WEDDING;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // Personal settings use their own prefix so they never clash with demo data tables
+  const ls = { get(k, d) { try { const v = localStorage.getItem("wdme_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+               set(k, v) { try { localStorage.setItem("wdme_" + k, JSON.stringify(v)); } catch (e) {} } };
+  const ago = (iso) => { const s = (Date.now() - new Date(iso)) / 1000; if (s < 60) return "just now"; if (s < 3600) return Math.floor(s / 60) + "m ago"; if (s < 86400) return Math.floor(s / 3600) + "h ago"; return new Date(iso).toLocaleDateString(); };
+  function toast(t) { const el = $("#toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2600); }
+
+  $("#couple").textContent = `${W.groom} & ${W.bride}`;
+  $("#demo").hidden = Store.live;
+
+  /* ── guest name ── */
+  let name = "";
+  try { name = localStorage.getItem("wd_guestname") || ""; } catch (e) {}
+  function setName(n) {
+    name = n.trim(); try { localStorage.setItem("wd_guestname", name); } catch (e) {}
+    $("#hi").innerHTML = `So happy you're here, <button id="rename">${esc(name)}</button>`;
+    $("#rename").onclick = askName;
+    ["#w-name", "#c-name"].forEach((s) => { if (!$(s).value) $(s).value = name; });
+  }
+  function askName() { $("#n-input").value = name; $("#name-modal").classList.add("on"); setTimeout(() => $("#n-input").focus(), 100); }
+  $("#name-form").onsubmit = (e) => { e.preventDefault(); const v = $("#n-input").value.trim(); if (!v) return; setName(v); $("#name-modal").classList.remove("on"); };
+  if (name) setName(name); else { $("#hi").textContent = "Thank you for celebrating with us"; setTimeout(askName, 900); }
+  const whoAmI = () => name || "A guest";
+
+  /* ── rooms via hash ── */
+  const rooms = ["photos", "wishes", "games", "capsule"];
+  function route() {
+    const r = rooms.includes(location.hash.slice(1)) ? location.hash.slice(1) : "photos";
+    $$(".room").forEach((el) => el.classList.toggle("on", el.id === r));
+    $$(".tabs a").forEach((a) => a.classList.toggle("on", a.dataset.r === r));
+  }
+  addEventListener("hashchange", () => { route(); window.scrollTo({ top: $("main").offsetTop - 10, behavior: "smooth" }); });
+  route();
+
+  /* ── love counter ── */
+  let pending = 0, flushT;
+  Store.watch("reactions", async () => {
+    try {
+      const rows = await Store.list("reactions", { limit: 5000 });
+      window._reactions = rows;
+      const total = rows.filter((r) => r.kind === "love").reduce((a, r) => a + (r.count || 1), 0);
+      $("#love-count").textContent = (total + pending).toLocaleString();
+      renderWishHearts();
+    } catch (e) {}
+  });
+  $("#love-btn").addEventListener("click", (e) => {
+    pending++; $("#love-count").textContent = (parseInt($("#love-count").textContent.replace(/,/g, "")) + 1).toLocaleString();
+    const r = e.currentTarget.getBoundingClientRect();
+    for (let i = 0; i < 3; i++) {
+      const h = document.createElement("div"); h.className = "heart-fly";
+      h.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.6h2c.7-1.4 2.2-2.6 4.3-2.6 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+      h.style.left = r.left + r.width / 2 - 10 + "px"; h.style.top = r.top + "px";
+      h.style.setProperty("--dx", (Math.random() * 120 - 60) + "px"); h.style.setProperty("--rot", (Math.random() * 60 - 30) + "deg");
+      h.style.animationDelay = i * .12 + "s"; document.body.appendChild(h); setTimeout(() => h.remove(), 2000);
+    }
+    clearTimeout(flushT);
+    flushT = setTimeout(async () => { const n = pending; pending = 0; try { await Store.insert("reactions", { kind: "love", target: "couple", count: Math.min(n, 50) }); } catch (e) {} }, 1200);
+  });
+
+  /* ── photos ── */
+  W.hunt.forEach((p) => $("#ph-prompt").insertAdjacentHTML("beforeend", `<option>${esc(p)}</option>`));
+  let photos = [];
+  async function handleFiles(files) {
+    files = [...files].filter((f) => f.type.startsWith("image/"));
+    if (!files.length) return;
+    if (!name) { askName(); return; }
+    const prog = $("#ph-prog"), bar = prog.firstElementChild, msg = $("#ph-msg");
+    prog.hidden = false; msg.className = "msg"; let done = 0;
+    for (const f of files) {
+      msg.textContent = `Uploading ${done + 1} of ${files.length}…`;
+      try {
+        const url = await Store.uploadPhoto(f);
+        await Store.insert("photos", { name: whoAmI(), url, caption: $("#ph-cap").value.trim(), prompt: $("#ph-prompt").value });
+        if ($("#ph-prompt").value) { const got = ls.get("hunt", []); if (!got.includes($("#ph-prompt").value)) { got.push($("#ph-prompt").value); ls.set("hunt", got); } }
+      } catch (e) { msg.className = "msg err"; msg.textContent = e.message || "That photo didn't upload. Please try again."; prog.hidden = true; return; }
+      done++; bar.style.width = (done / files.length * 100) + "%";
+    }
+    msg.textContent = done > 1 ? `${done} photos added to the wall. Thank you!` : "Your photo is on the wall. Thank you!";
+    $("#ph-cap").value = ""; $("#ph-prompt").value = ""; renderHunt();
+    setTimeout(() => { prog.hidden = true; bar.style.width = 0; }, 900);
+    toast("Shared with everyone ♡");
+  }
+  $("#cam").onchange = (e) => { handleFiles(e.target.files); e.target.value = ""; };
+  $("#pick").onchange = (e) => { handleFiles(e.target.files); e.target.value = ""; };
+
+  Store.watch("photos", async () => {
+    try { photos = await Store.list("photos"); } catch (e) { return; }
+    $("#st-photos").textContent = photos.length;
+    $("#st-people").textContent = new Set(photos.map((p) => p.name)).size;
+    $("#gallery").innerHTML = photos.length ? photos.map((p, i) => `
+      <figure class="ph" data-i="${i}" style="animation-delay:${Math.min(i, 12) * 40}ms">
+        ${p.prompt ? `<span class="tag">${esc(p.prompt)}</span>` : ""}
+        <img src="${esc(p.url)}" alt="${esc(p.caption || "Photo by " + p.name)}" loading="lazy">
+        <figcaption><b>${esc(p.name)}</b>${esc(p.caption || "")}</figcaption>
+      </figure>`).join("")
+      : `<div class="empty" style="column-span:all"><span class="script">Be the first</span>No photos yet. Tap "Take a photo" to start the wall.</div>`;
+  });
+
+  /* lightbox */
+  let lbI = 0;
+  function openLb(i) { lbI = (i + photos.length) % photos.length; const p = photos[lbI]; $("#lb-img").src = p.url; $("#lb-cap").textContent = p.name + (p.caption ? " · " + p.caption : ""); $("#lb").classList.add("on"); }
+  $("#gallery").onclick = (e) => { const f = e.target.closest(".ph"); if (f) openLb(+f.dataset.i); };
+  $("#lb-close").onclick = () => $("#lb").classList.remove("on");
+  $("#lb-prev").onclick = () => openLb(lbI - 1);
+  $("#lb-next").onclick = () => openLb(lbI + 1);
+  $("#lb").onclick = (e) => { if (e.target.id === "lb") $("#lb").classList.remove("on"); };
+  addEventListener("keydown", (e) => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") $("#lb").classList.remove("on"); if (e.key === "ArrowLeft") openLb(lbI - 1); if (e.key === "ArrowRight") openLb(lbI + 1); });
+  let tx = 0; $("#lb").addEventListener("touchstart", (e) => tx = e.touches[0].clientX, { passive: true });
+  $("#lb").addEventListener("touchend", (e) => { const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) openLb(lbI + (d < 0 ? 1 : -1)); });
+
+  /* ── wishes ── */
+  let wishes = [];
+  const myHearts = new Set(ls.get("hearted", []));
+  $("#wish-form").onsubmit = async (e) => {
+    e.preventDefault();
+    const n = $("#w-name").value.trim(), m = $("#w-msg").value.trim(), box = $("#w-msgbox");
+    if (!n || !m) { box.className = "msg err"; box.textContent = "Please add your name and a wish."; return; }
+    $("#w-send").disabled = true;
+    try {
+      await Store.insert("wishes", { name: n, relation: $("#w-rel").value, message: m, color: (document.querySelector("[name=wc]:checked") || {}).value || "sage" });
+      $("#w-msg").value = ""; box.className = "msg"; box.textContent = "Your wish is pinned to the wall. Thank you!"; toast("Wish pinned ♡");
+      if (!name) setName(n);
+    } catch (err) { box.className = "msg err"; box.textContent = "We couldn't post your wish. Please try again."; }
+    $("#w-send").disabled = false;
+  };
+  function heartCount(id) { return (window._reactions || []).filter((r) => r.kind === "wish" && r.target === String(id)).length; }
+  function renderWishHearts() { $$(".wish .hb").forEach((b) => { b.querySelector("b").textContent = heartCount(b.dataset.id) || ""; b.classList.toggle("mine", myHearts.has(b.dataset.id)); }); }
+  Store.watch("wishes", async () => {
+    try { wishes = await Store.list("wishes"); } catch (e) { return; }
+    $("#wall").innerHTML = wishes.length ? wishes.map((w, i) => `
+      <article class="wish c-${esc(w.color || "sage")}" style="transform:rotate(${((i * 37) % 5 - 2) * .4}deg);animation-delay:${Math.min(i, 10) * 50}ms">
+        <p>${esc(w.message)}</p>
+        <footer><div><b>${esc(w.name)}</b><span>${esc(w.relation || "")} · ${ago(w.created_at)}</span></div>
+        <button class="hb" data-id="${esc(w.id)}" aria-label="Heart this wish"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.6h2c.7-1.4 2.2-2.6 4.3-2.6 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg><b></b></button></footer>
+      </article>`).join("")
+      : `<div class="empty"><span class="script">Dear couple…</span>No wishes yet. Yours could be the first they read.</div>`;
+    renderWishHearts();
+  });
+  $("#wall").onclick = async (e) => {
+    const b = e.target.closest(".hb"); if (!b || myHearts.has(b.dataset.id)) return;
+    myHearts.add(b.dataset.id); ls.set("hearted", [...myHearts]);
+    b.classList.add("mine"); b.querySelector("b").textContent = heartCount(b.dataset.id) + 1;
+    try { await Store.insert("reactions", { kind: "wish", target: b.dataset.id, count: 1 }); } catch (err) {}
+  };
+
+  /* ── quiz ── */
+  const Q = W.quiz; let qi = 0, score = 0;
+  function quizStart() {
+    const prev = ls.get("quiz", null);
+    $("#quiz-body").innerHTML = `<p style="color:var(--ink-soft);margin:0 0 16px">${Q.length} questions about us. Score high to top the leaderboard.</p>
+      ${prev ? `<p style="margin:0 0 14px">Your last score: <b>${prev.score}/${prev.total}</b></p>` : ""}
+      <button class="btn solid" id="q-go">${prev ? "Play again" : "Start the quiz"}</button>`;
+    $("#q-go").onclick = () => { qi = 0; score = 0; quizQ(); };
+  }
+  function quizQ() {
+    const q = Q[qi];
+    $("#quiz-body").innerHTML = `<div class="q-meta"><span>Question ${qi + 1} of ${Q.length}</span><span>Score ${score}</span></div>
+      <div class="q-bar"><i style="width:${qi / Q.length * 100}%"></i></div>
+      <div class="q-text">${esc(q.q)}</div>
+      <div class="q-choices">${q.choices.map((c, i) => `<button data-i="${i}">${esc(c)}</button>`).join("")}</div>`;
+    $$(".q-choices button").forEach((b) => b.onclick = () => {
+      const i = +b.dataset.i; $$(".q-choices button").forEach((x) => x.disabled = true);
+      if (i === q.answer) { score++; b.classList.add("right"); } else { b.classList.add("wrong"); $$(".q-choices button")[q.answer].classList.add("right"); }
+      setTimeout(() => { qi++; qi < Q.length ? quizQ() : quizEnd(); }, 900);
+    });
+  }
+  async function quizEnd() {
+    const line = score === Q.length ? "Perfect! You truly know us." : score >= Q.length * .6 ? "So close to perfect. We love that." : "Now you know us a little better!";
+    $("#quiz-body").innerHTML = `<div class="score-big">${score}/${Q.length}</div><p style="text-align:center;font-family:var(--display);font-style:italic;color:var(--ink-soft)">${line}</p>
+      <div style="text-align:center"><button class="btn" id="q-again">Back to start</button></div>`;
+    $("#q-again").onclick = quizStart;
+    ls.set("quiz", { score, total: Q.length });
+    try { await Store.insert("quiz_scores", { name: whoAmI(), score, total: Q.length }); } catch (e) {}
+  }
+  quizStart();
+  Store.watch("quiz_scores", async () => {
+    let rows; try { rows = await Store.list("quiz_scores"); } catch (e) { return; }
+    const best = {}; rows.forEach((r) => { if (!best[r.name] || r.score > best[r.name].score) best[r.name] = r; });
+    const top = Object.values(best).sort((a, b) => b.score - a.score || new Date(a.created_at) - new Date(b.created_at)).slice(0, 10);
+    $("#board").innerHTML = top.length ? top.map((r) => `<li><span>${esc(r.name)}</span><b>${r.score}/${r.total}</b></li>`).join("")
+      : `<li style="color:var(--ink-soft)"><span>Play the quiz to claim the top spot.</span></li>`;
+  });
+
+  /* ── polls ── */
+  const myVotes = ls.get("votes", {});
+  const g1 = W.groom.split(" ")[0], b1 = (W.bride.split(" ").pop());
+  Store.watch("votes", async () => {
+    let rows; try { rows = await Store.list("votes", { limit: 5000 }); } catch (e) { return; }
+    $("#polls").innerHTML = W.polls.map((p, i) => {
+      const vs = rows.filter((r) => +r.poll === i), a = vs.filter((r) => r.choice === "groom").length, b = vs.length - a, t = vs.length || 1;
+      const voted = myVotes[i];
+      const pct = (n) => voted ? Math.round(n / t * 100) : 0;
+      return `<div class="poll ${voted ? "voted" : ""}"><div class="pq">${esc(p)}</div><div class="pbtns">
+        <button class="pbtn ${voted === "groom" ? "picked" : ""}" data-p="${i}" data-c="groom"><i style="width:${pct(a)}%"></i><span>${esc(g1)}</span><b>${voted ? pct(a) + "%" : ""}</b></button>
+        <button class="pbtn ${voted === "bride" ? "picked" : ""}" data-p="${i}" data-c="bride"><i style="width:${pct(b)}%"></i><span>${esc(b1)}</span><b>${voted ? pct(b) + "%" : ""}</b></button>
+      </div></div>`;
+    }).join("");
+  });
+  $("#polls").onclick = async (e) => {
+    const b = e.target.closest(".pbtn"); if (!b || myVotes[b.dataset.p]) return;
+    myVotes[b.dataset.p] = b.dataset.c; ls.set("votes", myVotes);
+    try { await Store.insert("votes", { poll: +b.dataset.p, choice: b.dataset.c, name: whoAmI() }); } catch (err) { toast("Your vote didn't go through. Please try again."); delete myVotes[b.dataset.p]; ls.set("votes", myVotes); }
+  };
+
+  /* ── scavenger hunt ── */
+  function renderHunt() {
+    const got = new Set(ls.get("hunt", []));
+    photos.forEach((p) => { if (p.prompt && p.name === name) got.add(p.prompt); });
+    $("#hunt").innerHTML = W.hunt.map((h) => `<li class="${got.has(h) ? "got" : ""}" data-h="${esc(h)}"><i>${got.has(h) ? "✓" : ""}</i>${esc(h)}</li>`).join("");
+    const n = W.hunt.filter((h) => got.has(h)).length;
+    $("#hunt-n").textContent = n; $("#hunt-t").textContent = W.hunt.length;
+    $("#ring-fg").style.strokeDashoffset = 176 - 176 * n / W.hunt.length;
+  }
+  renderHunt(); Store.watch("photos", renderHunt);
+  $("#hunt").onclick = (e) => { const li = e.target.closest("li"); if (!li) return; location.hash = "photos"; $("#ph-prompt").value = li.dataset.h; toast("Now snap: " + li.dataset.h); };
+
+  /* ── songs ── */
+  $("#song-form").onsubmit = async (e) => {
+    e.preventDefault(); const t = $("#s-title").value.trim(); if (!t) return;
+    try { await Store.insert("songs", { name: whoAmI(), title: t, artist: $("#s-artist").value.trim() }); $("#song-form").reset(); $("#s-msg").className = "msg"; $("#s-msg").textContent = "Sent to the DJ. Get ready to dance!"; }
+    catch (err) { $("#s-msg").className = "msg err"; $("#s-msg").textContent = "Your request didn't go through. Please try again."; }
+  };
+  Store.watch("songs", async () => {
+    let rows; try { rows = await Store.list("songs", { limit: 60 }); } catch (e) { return; }
+    $("#songs").innerHTML = rows.map((s) => `<li><b>${esc(s.title)}</b>${s.artist ? " · " + esc(s.artist) : ""}<small>Requested by ${esc(s.name)} · ${ago(s.created_at)}</small></li>`).join("")
+      || `<li style="color:var(--ink-soft)">No requests yet. What gets you on the dance floor?</li>`;
+  });
+
+  /* ── time capsule ── */
+  const anniv = new Date(W.dateISO); anniv.setFullYear(anniv.getFullYear() + 1);
+  $("#unlock").textContent = "Opens on " + anniv.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  $("#cap-form").onsubmit = async (e) => {
+    e.preventDefault(); const n = $("#c-name").value.trim(), m = $("#c-msg").value.trim(), box = $("#c-msgbox");
+    if (!n || !m) { box.className = "msg err"; box.textContent = "Please add your name and your letter."; return; }
+    $("#c-send").disabled = true; const wrap = $("#cap-wrap"); wrap.classList.add("open");
+    try {
+      await Store.insert("capsule", { name: n, message: m });
+      setTimeout(() => { wrap.classList.remove("open"); wrap.classList.add("sealed"); }, 700);
+      $("#c-msg").value = ""; box.className = "msg"; box.textContent = "Sealed. We'll open it on our first anniversary."; toast("Letter sealed ♡");
+      ls.set("letters", ls.get("letters", 0) + 1);
+    } catch (err) { wrap.classList.remove("open"); box.className = "msg err"; box.textContent = "Your letter didn't send. Please try again."; }
+    $("#c-send").disabled = false;
+  };
+})();
+</script>
+</body>
+</html>
