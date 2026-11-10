@@ -8,8 +8,8 @@ window.WEDDING = {
   monogram: "A & C",
 
   // Wedding date & time (24h, local time of the venue)
-  dateISO: "2027-02-14T15:00:00+08:00",
-  dateLabel: "Sunday, the fourteenth of February",
+  dateISO: "2027-10-16T15:00:00+08:00",
+  dateLabel: "Saturday, the sixteenth of October",
   yearLabel: "Two thousand twenty-seven",
 
   ceremony: {
@@ -27,7 +27,7 @@ window.WEDDING = {
     mapUrl: "https://maps.google.com/?q=Reception+Venue+City"
   },
 
-  rsvpBy: "January 10, 2027",
+  rsvpBy: "September 16, 2027",
 
   // Our story — shown as a timeline on the invitation
   story: [
