@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Invitation Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap">
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* Layout: a 5×7 letterpress card drawn at 1080×1512 px and scaled to fit; ?export=1 renders it bare for the PNG. */
+:root{--paper:#FBF7EF;--cream:#F3EBDD;--matcha:#6F7F4A;--deep:#3E4A2C;--sage:#A9B58E;--khaki:#C3B091;--gold:#B0904F;--ink:#2C3324;--soft:#5E6553;
+  --display:"Bodoni Moda",Georgia,serif;--script:"Pinyon Script",cursive;--body:"Jost","Avenir Next",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#E3DCCB;font-family:var(--body);color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:18px;padding:24px 16px 40px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.bar a,.bar button{padding:12px 22px;border-radius:999px;border:1px solid var(--deep);background:var(--deep);color:var(--cream);font:inherit;font-size:12px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.bar .ghost{background:transparent;color:var(--deep)}
+.frame{width:min(100%,540px);aspect-ratio:1080/1512;position:relative}
+.card{position:absolute;left:0;top:0;width:1080px;height:1512px;transform-origin:top left;background:var(--paper);box-shadow:0 40px 80px -40px rgba(62,74,44,.55);
+  display:flex;flex-direction:column;align-items:center;text-align:center;padding:150px 110px 90px;overflow:hidden}
+.card::before{content:"";position:absolute;inset:34px;border:2px solid rgba(176,144,79,.6);border-radius:480px 480px 10px 10px;pointer-events:none}
+.card::after{content:"";position:absolute;inset:50px;border:1.5px solid rgba(176,144,79,.28);border-radius:465px 465px 6px 6px;pointer-events:none}
+.sprig{width:250px;margin-bottom:26px}
+.sprig path{fill:none;stroke:var(--matcha);stroke-width:1.3;stroke-linecap:round}
+.sprig .l{fill:rgba(169,181,142,.6)}
+.eb{font-size:24px;letter-spacing:.38em;text-transform:uppercase;color:var(--matcha);font-weight:500}
+.n{font-family:var(--display);font-size:118px;line-height:1;color:var(--deep);margin-top:34px}
+.n.k{font-size:100px}
+.amp{font-family:var(--script);font-size:200px;line-height:.9;color:var(--gold);margin:6px 0 -16px}
+.lead{font-family:var(--display);font-style:italic;font-size:32px;color:var(--soft);margin-top:24px}
+.date{display:flex;align-items:center;gap:30px;margin-top:40px;font-family:var(--display)}
+.date .s{font-family:var(--body);font-size:22px;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--matcha);border-top:1.5px solid var(--khaki);border-bottom:1.5px solid var(--khaki);padding:12px 0;width:190px}
+.date .d{font-size:96px;line-height:1;color:var(--deep)}
+.yr{font-size:22px;letter-spacing:.3em;text-transform:uppercase;color:var(--soft);margin-top:16px}
+.qrwrap{display:flex;align-items:center;gap:36px;margin-top:auto;text-align:left;background:var(--cream);border-radius:18px;padding:26px 34px 26px 26px}
+.qr{background:#fff;padding:14px;border-radius:10px;border:1px solid rgba(176,144,79,.35);flex:none}
+.qr img,.qr canvas{display:block;width:230px!important;height:230px!important}
+.qrtxt b{display:block;font-family:var(--display);font-weight:400;font-size:38px;color:var(--deep);line-height:1.15}
+.qrtxt span{display:block;font-size:22px;color:var(--soft);margin-top:12px;line-height:1.45;max-width:330px}
+.tag{margin-top:34px;font-family:var(--display);font-size:26px;color:var(--gold)}
+body.export{background:var(--paper);padding:0;display:block}
+body.export .bar,body.export .note{display:none}
+body.export .frame{width:1080px;height:1512px;aspect-ratio:auto}
+body.export .card{transform:none!important;box-shadow:none}
+.note{font-size:13px;color:var(--soft);max-width:540px;text-align:center;line-height:1.5}
+@media print{@page{size:5in 7in;margin:0}body{background:none;padding:0}.bar,.note{display:none}.frame{width:5in}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <a href="invite-card.png" download="Argie-and-Kae-invitation.png">Save as image</a>
+  <button class="ghost" onclick="window.print()">Print</button>
+</div>
+<div class="frame" id="frame">
+  <div class="card" id="card">
+    <svg class="sprig" viewBox="0 0 160 60" aria-hidden="true">
+      <path d="M8 40 C40 32 70 30 152 26"/>
+      <path class="l" d="M30 36 C26 24 34 16 42 14 C42 24 38 32 30 36Z"/><path class="l" d="M40 35 C46 44 56 48 64 46 C58 38 50 34 40 35Z"/>
+      <path class="l" d="M62 32 C58 20 66 12 76 10 C76 20 72 28 62 32Z"/><path class="l" d="M74 31 C80 40 92 44 100 41 C94 34 84 30 74 31Z"/>
+      <path class="l" d="M96 29 C94 18 102 11 112 10 C110 20 106 26 96 29Z"/><path class="l" d="M110 28 C118 36 128 38 136 35 C130 29 120 26 110 28Z"/>
+      <path class="l" d="M132 27 C132 19 138 14 146 14 C144 21 140 25 132 27Z"/>
+    </svg>
+    <div class="eb">Together with their families</div>
+    <div class="n" id="groom">Argie</div>
+    <div class="amp">&amp;</div>
+    <div class="n k" id="bride">Chatherine Kae</div>
+    <div class="lead">request the honour of your presence</div>
+    <div class="date"><span class="s" id="month">October</span><span class="d" id="day">16</span><span class="s" id="weekday">Saturday</span></div>
+    <div class="yr" id="yr">Two thousand twenty-seven</div>
+    <div class="qrwrap">
+      <div class="qr" id="qr"></div>
+      <div class="qrtxt"><b>Scan to open your invitation</b><span>On your phone? Press and hold the code, then tap the link.</span></div>
+    </div>
+    <div class="tag" id="tag">#ArgieAndKaeForever</div>
+  </div>
+</div>
+<p class="note">Send the saved image in chat, or print it at 5×7 in. The QR code opens the invitation directly.</p>
+<script>
+  const W = window.WEDDING, d = new Date(W.dateISO);
+  const set = (id, v) => { document.getElementById(id).textContent = v; };
+  set("groom", W.groom); set("bride", W.bride); set("yr", W.yearLabel); set("tag", W.hashtag);
+  set("month", d.toLocaleDateString("en-US", { month: "long", timeZone: "Asia/Manila" }));
+  set("day", d.toLocaleDateString("en-US", { day: "numeric", timeZone: "Asia/Manila" }));
+  set("weekday", d.toLocaleDateString("en-US", { weekday: "long", timeZone: "Asia/Manila" }));
+  const url = W.inviteUrl || new URL("./", location.href).href;
+  new QRCode(document.getElementById("qr"), { text: url, width: 460, height: 460, colorDark: "#3E4A2C", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+  if (new URLSearchParams(location.search).has("export")) document.body.classList.add("export");
+  else {
+    const fit = () => { const s = document.getElementById("frame").clientWidth / 1080; document.getElementById("card").style.transform = `scale(${s})`; };
+    fit(); addEventListener("resize", fit);
+  }
+</script>
+</body>
+</html>

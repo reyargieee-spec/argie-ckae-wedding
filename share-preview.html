@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Link Preview Image</title>
+<!-- Source for og-image.jpg (1200×630), the picture chat apps show when the invitation link is shared. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Jost:wght@400;500&family=Pinyon+Script&display=swap">
+<style>
+:root{--cream:#F3EBDD;--khaki:#C3B091;--gold:#C9A863;--deep:#3E4A2C;--sage:#A9B58E}
+*{box-sizing:border-box}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{background:radial-gradient(110% 120% at 50% 0%,#5A6840 0%,var(--deep) 58%,#29321E 100%);color:var(--cream);font-family:"Jost",sans-serif;display:grid;place-items:center;position:relative}
+body::before{content:"";position:absolute;left:50%;top:38px;width:620px;height:640px;transform:translateX(-50%);border:1.5px solid rgba(201,168,99,.55);border-radius:310px 310px 0 0}
+body::after{content:"";position:absolute;left:50%;top:52px;width:592px;height:640px;transform:translateX(-50%);border:1px solid rgba(201,168,99,.25);border-radius:296px 296px 0 0}
+.c{position:relative;text-align:center;margin-top:40px}
+svg{width:190px;display:block;margin:0 auto 14px}
+svg path{fill:none;stroke:var(--khaki);stroke-width:1.4;stroke-linecap:round}
+svg .l{fill:rgba(169,181,142,.55)}
+.eb{font-size:17px;letter-spacing:.42em;text-transform:uppercase;color:var(--khaki);font-weight:500}
+.n{font-family:"Pinyon Script",cursive;font-size:108px;line-height:1.05;margin:14px 0 6px;color:var(--cream)}
+.n .amp{color:var(--gold);font-size:1.35em;padding:0 .04em;line-height:0;vertical-align:-.06em}
+.d{display:flex;align-items:center;justify-content:center;gap:22px;font-family:"Bodoni Moda",serif;font-size:30px;color:var(--cream);margin-top:16px}
+.d i{width:70px;height:1px;background:rgba(201,168,99,.7)}
+.sub{font-family:"Bodoni Moda",serif;font-style:italic;font-size:22px;color:#DCD3BD;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="c">
+  <svg viewBox="0 0 160 60" aria-hidden="true">
+    <path d="M8 40 C40 32 70 30 152 26"/>
+    <path class="l" d="M30 36 C26 24 34 16 42 14 C42 24 38 32 30 36Z"/><path class="l" d="M40 35 C46 44 56 48 64 46 C58 38 50 34 40 35Z"/>
+    <path class="l" d="M62 32 C58 20 66 12 76 10 C76 20 72 28 62 32Z"/><path class="l" d="M74 31 C80 40 92 44 100 41 C94 34 84 30 74 31Z"/>
+    <path class="l" d="M96 29 C94 18 102 11 112 10 C110 20 106 26 96 29Z"/><path class="l" d="M110 28 C118 36 128 38 136 35 C130 29 120 26 110 28Z"/>
+    <path class="l" d="M132 27 C132 19 138 14 146 14 C144 21 140 25 132 27Z"/>
+  </svg>
+  <div class="eb">You are invited to the wedding of</div>
+  <div class="n">Argie <span class="amp">&amp;</span> Chatherine Kae</div>
+  <div class="d"><i></i>Saturday · October 16 · 2027<i></i></div>
+  <div class="sub">Tap to open your invitation</div>
+</div>
+</body>
+</html>

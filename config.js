@@ -65,7 +65,10 @@ window.WEDDING = {
      Leave empty to use guest.html next to the invitation automatically.
      After you host the site, you can paste the full link here, e.g.
      "https://argie-and-kae.netlify.app/guest.html" */
-  guestUrl: "",
+  guestUrl: "https://reyargieee-spec.github.io/argie-ckae-wedding/guest.html",
+
+  // Invitation link that the QR invitation card opens
+  inviteUrl: "https://reyargieee-spec.github.io/argie-ckae-wedding/",
 
   /* Supabase connection (free). Leave empty to run in DEMO MODE,
      where everything is saved only in this browser.
